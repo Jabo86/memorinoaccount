@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MemorinoAccount</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
-  <!-- CDN CryptoJS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <script src="https://unpkg.com/@capacitor/core@latest/dist/capacitor.js"></script>
   <style>
     :root {
       --primary-color: #1976d2;
       --primary-hover: #1565c0;
       --danger-color: #e53935;
+      --warning-color: #ff9800;
       --bg-light: #f9f9f9;
       --text-light: #333;
       --card-light: #fff;
@@ -22,6 +23,7 @@
       --shadow-dark: rgba(255, 255, 255, 0.08);
       --error-color: #d32f2f;
       --success-color: #2e7d32;
+      --pro-color: #9c27b0;
     }
 
     * {
@@ -48,28 +50,43 @@
 
     header {
       display: flex;
+      justify-content: center;
       align-items: center;
-      gap: 0.8rem;
+      gap: 1rem;
       margin-bottom: 2rem;
       user-select: none;
+      position: relative;
+      width: 100%;
     }
 
     h1 {
       font-size: 2.5rem;
       color: var(--primary-color);
+      text-align: center;
+      flex-grow: 1;
     }
     body.dark h1 {
       color: var(--primary-hover);
     }
 
-    #themeToggle {
+    .theme-language-container {
+      display: flex;
+      gap: 0.5rem;
+      position: absolute;
+      right: 0;
+    }
+
+    #themeToggle, #languageToggle {
       cursor: pointer;
       font-size: 1.8rem;
       user-select: none;
       transition: color 0.3s ease;
       color: var(--primary-color);
+      background: none;
+      border: none;
+      padding: 0;
     }
-    body.dark #themeToggle {
+    body.dark #themeToggle, body.dark #languageToggle {
       color: var(--primary-hover);
     }
 
@@ -106,7 +123,7 @@
       border-color: #333;
     }
 
-    input, button {
+    input, button, select {
       width: 100%;
       padding: 0.8rem;
       margin-top: 0.8rem;
@@ -116,17 +133,17 @@
       font-family: inherit;
       transition: border-color 0.3s ease;
     }
-    input:focus {
+    input:focus, select:focus {
       outline: none;
       border-color: var(--primary-color);
       box-shadow: 0 0 6px var(--primary-color);
     }
-    body.dark input {
+    body.dark input, body.dark select {
       background: #2a2a2a;
       border-color: #555;
       color: var(--text-dark);
     }
-    body.dark input:focus {
+    body.dark input:focus, body.dark select:focus {
       border-color: var(--primary-hover);
       box-shadow: 0 0 6px var(--primary-hover);
     }
@@ -154,6 +171,24 @@
     }
     .logout:hover {
       background-color: #b71c1c;
+    }
+
+    .pro-btn {
+      background-color: var(--pro-color);
+      margin-top: 1rem;
+    }
+    .pro-btn:hover {
+      background-color: #7b1fa2;
+    }
+
+    .pro-badge {
+      background-color: var(--pro-color);
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      margin-left: 0.5rem;
+      display: inline-block;
     }
 
     .error-message {
@@ -187,6 +222,22 @@
       color: #81c784;
     }
 
+    .search-container {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .search-container input {
+      flex: 1;
+      margin-top: 0;
+    }
+
+    .search-container select {
+      width: auto;
+      margin-top: 0;
+    }
+
     .account-item {
       background: var(--card-light);
       border-radius: 12px;
@@ -206,7 +257,7 @@
 
     .account-name {
       font-weight: 600;
-      flex: 0 0 25%;
+      flex: 0 0 20%;
       min-width: 120px;
       white-space: nowrap;
       overflow: hidden;
@@ -220,13 +271,32 @@
     }
 
     .account-email {
-      flex: 0 0 25%;
+      flex: 0 0 20%;
       min-width: 120px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       font-size: 0.9rem;
       user-select: text;
+    }
+
+    .account-tags {
+      flex: 0 0 15%;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+    }
+
+    .tag {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 0.2rem 0.5rem;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      white-space: nowrap;
+    }
+    body.dark .tag {
+      background-color: var(--primary-hover);
     }
 
     .password-wrapper {
@@ -304,9 +374,69 @@
       stroke-linejoin: round;
     }
 
+    .tag-input-container {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.8rem;
+    }
+
+    .tag-input {
+      flex: 1;
+    }
+
+    .add-tag-btn {
+      width: auto;
+      padding: 0 1rem;
+      background-color: var(--warning-color);
+    }
+    .add-tag-btn:hover {
+      background-color: #e68a00;
+    }
+
+    .import-export-container {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .import-export-container button {
+      flex: 1;
+    }
+
+    .file-input-wrapper {
+      position: relative;
+      flex: 1;
+    }
+
+    .file-input-wrapper input {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      left: 0;
+      top: 0;
+      cursor: pointer;
+    }
+
     #importFile:disabled {
       opacity: 0.5;
       cursor: not-allowed;
+    }
+
+    .biometric-btn {
+      background-color: #4caf50;
+      margin-top: 1rem;
+    }
+    .biometric-btn:hover {
+      background-color: #388e3c;
+    }
+
+    .setup-biometric-btn {
+      background-color: #607d8b;
+      margin-top: 0.5rem;
+    }
+    .setup-biometric-btn:hover {
+      background-color: #455a64;
     }
 
     @media (max-width: 600px) {
@@ -345,7 +475,7 @@
         align-items: flex-start;
         gap: 0.5rem;
       }
-      .account-name, .account-email {
+      .account-name, .account-email, .account-tags {
         flex: 1 1 100%;
         width: 100%;
       }
@@ -356,15 +486,24 @@
       .btn-delete {
         align-self: flex-end;
       }
+      .import-export-container {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>Memorino Account</h1>
-    <div id="themeToggle" title="Cambia tema" aria-label="Cambia tema">
-      <span class="visually-hidden">Cambia tema</span>
-      <span class="theme-icon">🌞</span>
+    <h1 id="appTitle">Memorino Account</h1>
+    <div class="theme-language-container">
+      <button id="themeToggle" title="Cambia tema" aria-label="Cambia tema">
+        <span class="visually-hidden">Cambia tema</span>
+        <span class="theme-icon">🌞</span>
+      </button>
+      <button id="languageToggle" title="Cambia lingua" aria-label="Cambia lingua">
+        <span class="visually-hidden">Cambia lingua</span>
+        <span id="languageIcon">🇮🇹</span>
+      </button>
     </div>
   </header>
 
@@ -374,19 +513,43 @@
       <input type="password" id="userpass" placeholder="Password" autocomplete="current-password" />
       <div class="error-message" id="errorMessage"></div>
       <button id="loginBtn">Accedi</button>
+      <button id="biometricLoginBtn" class="biometric-btn" style="display:none;">Accedi con Biometria</button>
+      <button id="setupBiometricBtn" class="setup-biometric-btn" style="display:none;">Configura Autenticazione Biometrica</button>
     </div>
 
     <div class="card" id="mainApp" style="display:none;">
       <div class="welcome-message" id="welcomeMessage"></div>
+      
+      <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Cerca account..." />
+        <select id="tagFilter">
+          <option value="">Tutte le etichette</option>
+        </select>
+      </div>
+      
       <input type="text" id="accountName" placeholder="Nome Account" autocomplete="off" />
       <input type="email" id="accountEmail" placeholder="Email" autocomplete="email" />
       <input type="password" id="accountPassword" placeholder="Password" autocomplete="new-password" />
+      
+      <div class="tag-input-container">
+        <input type="text" id="tagInput" class="tag-input" placeholder="Aggiungi etichetta" />
+        <button id="addTagBtn" class="add-tag-btn">+</button>
+      </div>
+      <div id="tagsPreview" class="account-tags"></div>
+      
       <div class="error-message" id="accountErrorMessage"></div>
       <div class="success-message" id="accountSuccessMessage"></div>
       <button id="saveAccountBtn" disabled>Salva Account</button>
-      <button id="buyProBtn" style="display:none;">Passa a Pro</button>
-      <button onclick="exportData()">Esporta Dati</button>
-      <input type="file" id="importFile" accept="application/json" onchange="importData(event)" style="margin-top: 1rem;" />
+      <button id="buyProBtn" class="pro-btn" style="display:none;">Sblocca Versione Pro</button>
+      
+      <div class="import-export-container">
+        <button onclick="exportData()">Esporta Dati</button>
+        <div class="file-input-wrapper">
+          <button>Importa Dati</button>
+          <input type="file" id="importFile" accept="application/json" onchange="importData(event)" />
+        </div>
+      </div>
+      
       <button class="logout" id="logoutBtn">Logout</button>
     </div>
 
@@ -394,35 +557,299 @@
   </div>
 
   <script>
-    // Importazione del plugin Capacitor per gli acquisti in-app
-    // Nota: Per usare questa importazione, il codice deve essere in un file .js separato o configurato con un bundler (es. Vite, Webpack)
-    // Per semplicità, assumiamo che Capacitor sia incluso tramite script nel file capacitor.config.json
-    // Se usi un bundler, aggiungi: import { InAppPurchases } from '@capacitor-community/in-app-purchases';
+    // Dizionari per il multilinguaggio
+    const translations = {
+      it: {
+        appTitle: "Memorino Account",
+        themeToggle: "Cambia tema",
+        languageToggle: "Cambia lingua",
+        loginPlaceholder: "Nome utente",
+        passwordPlaceholder: "Password",
+        loginBtn: "Accedi",
+        biometricLogin: "Accedi con Biometria",
+        welcome: "Benvenuto, {username}!",
+        searchPlaceholder: "Cerca account...",
+        allTags: "Tutte le etichette",
+        accountNamePlaceholder: "Nome Account",
+        emailPlaceholder: "Email",
+        accountPasswordPlaceholder: "Password",
+        tagPlaceholder: "Aggiungi etichetta",
+        saveAccountBtn: "Salva Account",
+        buyProBtn: "Sblocca Versione Pro",
+        exportBtn: "Esporta Dati",
+        importBtn: "Importa Dati",
+        logoutBtn: "Logout",
+        saving: "Salvataggio...",
+        accountUpdated: "Account aggiornato!",
+        accountSaved: "Account salvato!",
+        fillAllFields: "Compila tutti i campi",
+        invalidEmail: "Inserisci un'email valida",
+        deleteConfirm: "Eliminare \"{name}\"?",
+        exportError: "Errore nell'esportazione",
+        importSuccess: "Importati {count} account",
+        importError: "Errore nell'importazione",
+        loginError: "Effettua il login",
+        maxAccounts: "Limite di 5 account raggiunto. Sblocca la versione Pro per account illimitati!",
+        biometricNotSupported: "Biometria non supportata",
+        biometricError: "Autenticazione biometrica fallita",
+        proFeature: "Funzionalità Pro - Acquista per sbloccare account illimitati",
+        proActivated: "Versione Pro attivata! Account illimitati sbloccati.",
+        proBadge: "PRO",
+        biometricReason: "Accedi con biometria",
+        cancel: "Annulla",
+        noBiometricAccount: "Nessun account configurato per il login biometrico",
+        setupBiometric: "Configura autenticazione biometrica",
+        biometricSetupSuccess: "Autenticazione biometrica configurata con successo!",
+        biometricSetupError: "Errore nella configurazione biometrica",
+        fillPasswordFirst: "Inserisci prima la password"
+      },
+      en: {
+        appTitle: "Account Keeper",
+        themeToggle: "Toggle theme",
+        languageToggle: "Change language",
+        loginPlaceholder: "Username",
+        passwordPlaceholder: "Password",
+        loginBtn: "Login",
+        biometricLogin: "Login with Biometrics",
+        welcome: "Welcome, {username}!",
+        searchPlaceholder: "Search accounts...",
+        allTags: "All tags",
+        accountNamePlaceholder: "Account Name",
+        emailPlaceholder: "Email",
+        accountPasswordPlaceholder: "Password",
+        tagPlaceholder: "Add tag",
+        saveAccountBtn: "Save Account",
+        buyProBtn: "Upgrade to Pro",
+        exportBtn: "Export Data",
+        importBtn: "Import Data",
+        logoutBtn: "Logout",
+        saving: "Saving...",
+        accountUpdated: "Account updated!",
+        accountSaved: "Account saved!",
+        fillAllFields: "Fill all fields",
+        invalidEmail: "Enter a valid email",
+        deleteConfirm: "Delete \"{name}\"?",
+        exportError: "Export error",
+        importSuccess: "Imported {count} accounts",
+        importError: "Import error",
+        loginError: "Please login",
+        maxAccounts: "5 accounts limit reached. Upgrade to Pro for unlimited accounts!",
+        biometricNotSupported: "Biometrics not supported",
+        biometricError: "Biometric authentication failed",
+        proFeature: "Pro Feature - Purchase to unlock unlimited accounts",
+        proActivated: "Pro version activated! Unlimited accounts unlocked.",
+        proBadge: "PRO",
+        biometricReason: "Login with biometrics",
+        cancel: "Cancel",
+        noBiometricAccount: "No account configured for biometric login",
+        setupBiometric: "Setup Biometric Authentication",
+        biometricSetupSuccess: "Biometric authentication setup successful!",
+        biometricSetupError: "Error setting up biometric authentication",
+        fillPasswordFirst: "Enter password first"
+      },
+      fr: {
+        appTitle: "Gestionnaire de Comptes",
+        themeToggle: "Changer le thème",
+        languageToggle: "Changer la langue",
+        loginPlaceholder: "Nom d'utilisateur",
+        passwordPlaceholder: "Mot de passe",
+        loginBtn: "Connexion",
+        biometricLogin: "Connexion biométrique",
+        welcome: "Bienvenue, {username}!",
+        searchPlaceholder: "Rechercher des comptes...",
+        allTags: "Tous les tags",
+        accountNamePlaceholder: "Nom du compte",
+        emailPlaceholder: "Email",
+        accountPasswordPlaceholder: "Mot de passe",
+        tagPlaceholder: "Ajouter un tag",
+        saveAccountBtn: "Enregistrer",
+        buyProBtn: "Passer à Pro",
+        exportBtn: "Exporter",
+        importBtn: "Importer",
+        logoutBtn: "Déconnexion",
+        saving: "Enregistrement...",
+        accountUpdated: "Compte mis à jour!",
+        accountSaved: "Compte enregistré!",
+        fillAllFields: "Remplissez tous les champs",
+        invalidEmail: "Entrez un email valide",
+        deleteConfirm: "Supprimer \"{name}\"?",
+        exportError: "Erreur d'exportation",
+        importSuccess: "{count} comptes importés",
+        importError: "Erreur d'importation",
+        loginError: "Veuillez vous connecter",
+        maxAccounts: "Limite de 5 comptes atteinte. Passez à la version Pro!",
+        biometricNotSupported: "Biométrie non supportée",
+        biometricError: "Authentification biométrique échouée",
+        proFeature: "Fonctionnalité Pro - Acheter pour débloquer des comptes illimités",
+        proActivated: "Version Pro activée! Comptes illimités débloqués.",
+        proBadge: "PRO",
+        biometricReason: "Connexion biométrique",
+        cancel: "Annuler",
+        noBiometricAccount: "Aucun compte configuré pour la connexion biométrique",
+        setupBiometric: "Configurer l'authentification biométrique",
+        biometricSetupSuccess: "Authentification biométrique configurée avec succès!",
+        biometricSetupError: "Erreur de configuration biométrique",
+        fillPasswordFirst: "Entrez d'abord le mot de passe"
+      },
+      de: {
+        appTitle: "Konto-Verwalter",
+        themeToggle: "Thema wechseln",
+        languageToggle: "Sprache ändern",
+        loginPlaceholder: "Benutzername",
+        passwordPlaceholder: "Passwort",
+        loginBtn: "Anmelden",
+        biometricLogin: "Mit Biometrie anmelden",
+        welcome: "Willkommen, {username}!",
+        searchPlaceholder: "Konten suchen...",
+        allTags: "Alle Tags",
+        accountNamePlaceholder: "Kontoname",
+        emailPlaceholder: "Email",
+        accountPasswordPlaceholder: "Passwort",
+        tagPlaceholder: "Tag hinzufügen",
+        saveAccountBtn: "Konto speichern",
+        buyProBtn: "Zu Pro wechseln",
+        exportBtn: "Daten exportieren",
+        importBtn: "Daten importieren",
+        logoutBtn: "Abmelden",
+        saving: "Wird gespeichert...",
+        accountUpdated: "Konto aktualisiert!",
+        accountSaved: "Konto gespeichert!",
+        fillAllFields: "Füllen Sie alle Felder aus",
+        invalidEmail: "Gültige Email eingeben",
+        deleteConfirm: "\"{name}\" löschen?",
+        exportError: "Exportfehler",
+        importSuccess: "{count} Konten importiert",
+        importError: "Importfehler",
+        loginError: "Bitte anmelden",
+        maxAccounts: "Limit von 5 Konten erreicht. Wechseln Sie zu Pro!",
+        biometricNotSupported: "Biometrie nicht unterstützt",
+        biometricError: "Biometrische Authentifizierung fehlgeschlagen",
+        proFeature: "Pro-Funktion - Kaufen Sie unbegrenzte Konten frei",
+        proActivated: "Pro-Version aktiviert! Unbegrenzte Konten freigeschaltet.",
+        proBadge: "PRO",
+        biometricReason: "Mit Biometrie anmelden",
+        cancel: "Abbrechen",
+        noBiometricAccount: "Kein Konto für biometrische Anmeldung konfiguriert",
+        setupBiometric: "Biometrische Authentifizierung einrichten",
+        biometricSetupSuccess: "Biometrische Authentifizierung erfolgreich eingerichtet!",
+        biometricSetupError: "Fehler beim Einrichten der biometrischen Authentifizierung",
+        fillPasswordFirst: "Geben Sie zuerst das Passwort ein"
+      },
+      es: {
+        appTitle: "Administrador de Cuentas",
+        themeToggle: "Cambiar tema",
+        languageToggle: "Cambiar idioma",
+        loginPlaceholder: "Nombre de usuario",
+        passwordPlaceholder: "Contraseña",
+        loginBtn: "Iniciar sesión",
+        biometricLogin: "Iniciar con biometría",
+        welcome: "¡Bienvenido, {username}!",
+        searchPlaceholder: "Buscar cuentas...",
+        allTags: "Todas las etiquetas",
+        accountNamePlaceholder: "Nombre de cuenta",
+        emailPlaceholder: "Email",
+        accountPasswordPlaceholder: "Contraseña",
+        tagPlaceholder: "Añadir etiqueta",
+        saveAccountBtn: "Guardar cuenta",
+        buyProBtn: "Pasar a Pro",
+        exportBtn: "Exportar datos",
+        importBtn: "Importar datos",
+        logoutBtn: "Cerrar sesión",
+        saving: "Guardando...",
+        accountUpdated: "¡Cuenta actualizada!",
+        accountSaved: "¡Cuenta guardada!",
+        fillAllFields: "Complete todos los campos",
+        invalidEmail: "Ingrese un email válido",
+        deleteConfirm: "¿Eliminar \"{name}\"?",
+        exportError: "Error al exportar",
+        importSuccess: "{count} cuentas importadas",
+        importError: "Error al importar",
+        loginError: "Por favor inicie sesión",
+        maxAccounts: "¡Límite de 5 cuentas alcanzado! Pase a la versión Pro",
+        biometricNotSupported: "Biometría no compatible",
+        biometricError: "Autenticación biométrica fallida",
+        proFeature: "Función Pro - Compre para desbloquear cuentas ilimitadas",
+        proActivated: "¡Versión Pro activada! Cuentas ilimitadas desbloqueadas.",
+        proBadge: "PRO",
+        biometricReason: "Iniciar sesión con biometría",
+        cancel: "Cancelar",
+        noBiometricAccount: "Ninguna cuenta configurada para inicio biométrico",
+        setupBiometric: "Configurar autenticación biométrica",
+        biometricSetupSuccess: "¡Autenticación biométrica configurada con éxito!",
+        biometricSetupError: "Error al configurar autenticación biométrica",
+        fillPasswordFirst: "Ingrese primero la contraseña"
+      }
+    };
 
-    // Verifica che CryptoJS sia caricato
-    if (typeof CryptoJS === 'undefined') {
-      console.error("Errore: CryptoJS non è caricato.");
-      alert("Errore: la libreria di crittografia non è disponibile. Controlla la connessione o il CDN.");
-      window.CryptoJS = {
-        AES: {
-          encrypt: function(text, key) {
-            console.warn("CryptoJS non disponibile - usando fallback non sicuro");
-            return text;
-          },
-          decrypt: function(cipher, key) {
-            console.warn("CryptoJS non disponibile - usando fallback non sicuro");
-            return cipher;
-          }
-        },
-        SHA256: function(text) {
-          console.warn("CryptoJS non disponibile - usando fallback non sicuro");
-          return { toString: function() { return text; } };
-        },
-        enc: { Utf8: {} }
-      };
+    const languageFlags = {
+      it: "🇮🇹",
+      en: "🇬🇧",
+      fr: "🇫🇷",
+      de: "🇩🇪",
+      es: "🇪🇸"
+    };
+
+    // Stato dell'applicazione
+    let currentUser = null;
+    let currentKey = null;
+    let currentLanguage = localStorage.getItem('language') || 'it';
+    let currentTags = [];
+    let allTags = new Set();
+    let editingAccountIndex = -1;
+
+    // Funzione per tradurre il testo
+    function translate(key, params = {}) {
+      let translation = translations[currentLanguage][key] || key;
+      for (const [param, value] of Object.entries(params)) {
+        translation = translation.replace(`{${param}}`, value);
+      }
+      return translation;
     }
 
-    // Funzioni di crittografia con gestione errori migliorata
+    // Aggiorna l'interfaccia con la lingua corrente
+    function updateUI() {
+      document.getElementById('appTitle').textContent = translate('appTitle');
+      document.getElementById('languageIcon').textContent = languageFlags[currentLanguage];
+      document.getElementById('username').placeholder = translate('loginPlaceholder');
+      document.getElementById('userpass').placeholder = translate('passwordPlaceholder');
+      document.getElementById('loginBtn').textContent = translate('loginBtn');
+      document.getElementById('biometricLoginBtn').textContent = translate('biometricLogin');
+      document.getElementById('setupBiometricBtn').textContent = translate('setupBiometric');
+      document.getElementById('searchInput').placeholder = translate('searchPlaceholder');
+      document.getElementById('tagFilter').options[0].text = translate('allTags');
+      document.getElementById('accountName').placeholder = translate('accountNamePlaceholder');
+      document.getElementById('accountEmail').placeholder = translate('emailPlaceholder');
+      document.getElementById('accountPassword').placeholder = translate('accountPasswordPlaceholder');
+      document.getElementById('tagInput').placeholder = translate('tagPlaceholder');
+      document.getElementById('saveAccountBtn').textContent = translate('saveAccountBtn');
+      document.getElementById('buyProBtn').textContent = translate('buyProBtn');
+      document.querySelector('button[onclick="exportData()"]').textContent = translate('exportBtn');
+      document.querySelector('.file-input-wrapper button').textContent = translate('importBtn');
+      document.getElementById('logoutBtn').textContent = translate('logoutBtn');
+
+      if (currentUser) {
+        const users = getUsers();
+        const isPro = users[currentUser]?.isPro || false;
+        let welcomeMsg = translate('welcome', { username: currentUser });
+        if (isPro) {
+          welcomeMsg += `<span class="pro-badge">${translate('proBadge')}</span>`;
+        }
+        document.getElementById('welcomeMessage').innerHTML = welcomeMsg;
+      }
+    }
+
+    // Cambia lingua
+    document.getElementById('languageToggle').addEventListener('click', () => {
+      const languages = Object.keys(translations);
+      const currentIndex = languages.indexOf(currentLanguage);
+      const nextIndex = (currentIndex + 1) % languages.length;
+      currentLanguage = languages[nextIndex];
+      localStorage.setItem('language', currentLanguage);
+      updateUI();
+      if (currentUser) loadAccounts();
+    });
+
+    // Funzioni di crittografia
     const encrypt = (text, key) => {
       try {
         if (!text || typeof text !== 'string') throw new Error("Testo non valido");
@@ -430,7 +857,7 @@
         return CryptoJS.AES.encrypt(text, key).toString();
       } catch (e) {
         console.error("Errore di crittografia:", e);
-        showAccountError("Errore durante la crittografia");
+        showAccountError(translate('loginError'));
         return null;
       }
     };
@@ -447,44 +874,6 @@
         return "";
       }
     };
-
-    // Funzioni tema
-    const themeToggle = document.getElementById('themeToggle');
-    const body = document.body;
-    function setTheme(dark) {
-      if (dark) {
-        body.classList.add('dark');
-        document.querySelector('.theme-icon').textContent = '🌙';
-        localStorage.setItem('theme', 'dark');
-      } else {
-        body.classList.remove('dark');
-        document.querySelector('.theme-icon').textContent = '🌞';
-        localStorage.setItem('theme', 'light');
-      }
-    }
-    themeToggle.onclick = () => setTheme(!body.classList.contains('dark'));
-    setTheme(localStorage.getItem('theme') === 'dark');
-
-    // Elementi UI
-    const loginContainer = document.getElementById('loginContainer');
-    const mainApp = document.getElementById('mainApp');
-    const welcomeMessage = document.getElementById('welcomeMessage');
-    const loginBtn = document.getElementById('loginBtn');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const usernameInput = document.getElementById('username');
-    const userpassInput = document.getElementById('userpass');
-    const accountNameInput = document.getElementById('accountName');
-    const accountEmailInput = document.getElementById('accountEmail');
-    const accountPasswordInput = document.getElementById('accountPassword');
-    const saveAccountBtn = document.getElementById('saveAccountBtn');
-    const buyProBtn = document.getElementById('buyProBtn');
-    const accountList = document.getElementById('accountList');
-    const errorMessage = document.getElementById('errorMessage');
-    const accountErrorMessage = document.getElementById('accountErrorMessage');
-    const accountSuccessMessage = document.getElementById('accountSuccessMessage');
-
-    let currentUser = null;
-    let currentKey = null;
 
     // Funzioni di salvataggio e caricamento
     function saveUsers(users) {
@@ -508,104 +897,45 @@
       }
     }
 
-    // Funzione di hash con fallback
+    // Funzione di hash
     function hashPassword(password) {
       try {
         if (!password) throw new Error("Password vuota");
         return CryptoJS.SHA256(password).toString();
       } catch (e) {
         console.error("Errore hash:", e);
-        return password; // Fallback non sicuro
+        return password;
       }
     }
 
     // Gestione messaggi
     function showError(msg) {
+      const errorMessage = document.getElementById('errorMessage');
       errorMessage.textContent = msg;
       setTimeout(() => errorMessage.textContent = '', 5000);
     }
 
     function showAccountError(msg) {
+      const accountErrorMessage = document.getElementById('accountErrorMessage');
       accountErrorMessage.textContent = msg;
-      accountSuccessMessage.textContent = '';
+      document.getElementById('accountSuccessMessage').textContent = '';
       setTimeout(() => accountErrorMessage.textContent = '', 5000);
     }
 
     function showAccountSuccess(msg) {
+      const accountSuccessMessage = document.getElementById('accountSuccessMessage');
       accountSuccessMessage.textContent = msg;
-      accountErrorMessage.textContent = '';
+      document.getElementById('accountErrorMessage').textContent = '';
       setTimeout(() => accountSuccessMessage.textContent = '', 5000);
     }
 
-    // Configurazione acquisti in-app
-    async function setupInAppPurchases() {
-      try {
-        // Nota: Assicurati che il plugin InAppPurchases sia disponibile globalmente
-        if (typeof InAppPurchases === 'undefined') {
-          console.error("Plugin InAppPurchases non disponibile");
-          showAccountError("Funzionalità Pro non disponibile");
-          return;
-        }
-        await InAppPurchases.registerProduct({ id: 'pro_version', type: 'non_consumable' });
-        await InAppPurchases.when('pro_version').approved(async (transaction) => {
-          localStorage.setItem('isPro', 'true');
-          await InAppPurchases.finishTransaction({ transactionId: transaction.transactionId });
-          showAccountSuccess("Versione Pro sbloccata!");
-          updateProButtonVisibility();
-          loadAccounts();
-        });
-        await InAppPurchases.when('pro_version').error((err) => {
-          showAccountError("Errore nell'acquisto: " + err.message);
-        });
-      } catch (e) {
-        console.error("Errore nella configurazione degli acquisti in-app:", e);
-        showAccountError("Errore nella configurazione degli acquisti");
-      }
-    }
-
-    // Verifica stato Pro
-    async function checkProStatus() {
-      const isPro = localStorage.getItem('isPro') === 'true';
-      if (!isPro && typeof InAppPurchases !== 'undefined') {
-        try {
-          const purchases = await InAppPurchases.restorePurchases();
-          if (purchases.some(p => p.productId === 'pro_version' && p.state === 'purchased')) {
-            localStorage.setItem('isPro', 'true');
-            showAccountSuccess("Versione Pro ripristinata!");
-          }
-        } catch (e) {
-          console.error("Errore nel ripristino acquisti:", e);
-        }
-      }
-      updateProButtonVisibility();
-    }
-
-    // Aggiorna visibilità del pulsante Pro
-    function updateProButtonVisibility() {
-      const isPro = localStorage.getItem('isPro') === 'true';
-      buyProBtn.style.display = isPro ? 'none' : 'block';
-    }
-
-    // Acquisto versione Pro
-    buyProBtn.onclick = async () => {
-      try {
-        if (typeof InAppPurchases === 'undefined') {
-          showAccountError("Acquisti in-app non disponibili");
-          return;
-        }
-        await InAppPurchases.purchaseProduct({ productId: 'pro_version' });
-      } catch (e) {
-        showAccountError("Errore nell'avvio dell'acquisto: " + e.message);
-      }
-    };
-
     // Login
-    loginBtn.onclick = () => {
-      const user = usernameInput.value.trim();
-      const pass = userpassInput.value;
+    document.getElementById('loginBtn').addEventListener('click', () => {
+      const user = document.getElementById('username').value.trim();
+      const pass = document.getElementById('userpass').value;
 
       if (!user || !pass) {
-        showError("Inserisci nome utente e password");
+        showError(translate('fillAllFields'));
         return;
       }
 
@@ -613,129 +943,251 @@
       const userHash = hashPassword(pass);
 
       if (!users[user]) {
-        users[user] = { passHash: userHash, accounts: [] };
+        users[user] = { passHash: userHash, accounts: [], isPro: false };
+        if (!saveUsers(users)) return;
       } else if (users[user].passHash !== userHash) {
-        showError("Password errata");
+        showError(translate('loginError'));
         return;
       }
 
       currentUser = user;
       currentKey = pass;
       localStorage.setItem('authUser', user);
+      localStorage.setItem('lastLoginMethod', 'password');
       initApp();
-    };
+    });
 
     // Logout
-    logoutBtn.onclick = () => {
+    document.getElementById('logoutBtn').addEventListener('click', () => {
       localStorage.removeItem('authUser');
       currentUser = currentKey = null;
-      accountList.innerHTML = '';
-      accountList.style.display = 'none';
-      mainApp.style.display = 'none';
-      loginContainer.style.display = 'block';
-      [accountNameInput, accountEmailInput, accountPasswordInput].forEach(i => i.value = '');
-      saveAccountBtn.disabled = true;
-      [errorMessage, accountErrorMessage, accountSuccessMessage].forEach(e => e.textContent = '');
-      updateProButtonVisibility();
-    };
+      document.getElementById('accountList').innerHTML = '';
+      document.getElementById('accountList').style.display = 'none';
+      document.getElementById('mainApp').style.display = 'none';
+      document.getElementById('loginContainer').style.display = 'block';
+      document.getElementById('accountName').value = '';
+      document.getElementById('accountEmail').value = '';
+      document.getElementById('accountPassword').value = '';
+      document.getElementById('saveAccountBtn').disabled = true;
+      document.getElementById('errorMessage').textContent = '';
+      document.getElementById('accountErrorMessage').textContent = '';
+      document.getElementById('accountSuccessMessage').textContent = '';
+      document.getElementById('buyProBtn').style.display = 'none';
+      updateUI();
+    });
 
     // Inizializzazione app
     async function initApp() {
-      loginContainer.style.display = 'none';
-      mainApp.style.display = 'block';
-      welcomeMessage.textContent = `Benvenuto, ${currentUser}!`;
-      await checkProStatus();
+      document.getElementById('loginContainer').style.display = 'none';
+      document.getElementById('mainApp').style.display = 'block';
+      
+      const users = getUsers();
+      const isPro = users[currentUser]?.isPro || false;
+      
+      let welcomeMsg = translate('welcome', { username: currentUser });
+      if (isPro) {
+        welcomeMsg += `<span class="pro-badge">${translate('proBadge')}</span>`;
+      }
+      
+      document.getElementById('welcomeMessage').innerHTML = welcomeMsg;
+      
+      // Carica tutti i tag esistenti
+      allTags = new Set();
+      const accounts = users[currentUser]?.accounts || [];
+      accounts.forEach(acc => {
+        if (acc.tags) {
+          acc.tags.forEach(tag => {
+            const decryptedTag = decrypt(tag, currentKey);
+            allTags.add(decryptedTag);
+          });
+        }
+      });
+      updateTagFilter();
+      
       loadAccounts();
+      
+      // Mostra/nascondi pulsanti biometrici
+      const biometricSupported = await checkBiometricSupport();
+      document.getElementById('biometricLoginBtn').style.display = 
+        (biometricSupported && users[currentUser]?.lastBiometricLogin) ? 'block' : 'none';
+      document.getElementById('setupBiometricBtn').style.display = 
+        (biometricSupported && !users[currentUser]?.lastBiometricLogin) ? 'block' : 'none';
     }
 
     // Validazione input account
     function validateAccountInputs() {
-      const nameValid = accountNameInput.value.trim();
-      const emailValid = accountEmailInput.value.trim();
-      const passValid = accountPasswordInput.value.trim();
-      saveAccountBtn.disabled = !(nameValid && emailValid && passValid);
+      const nameValid = document.getElementById('accountName').value.trim();
+      const emailValid = document.getElementById('accountEmail').value.trim();
+      const passValid = document.getElementById('accountPassword').value.trim();
+      document.getElementById('saveAccountBtn').disabled = !(nameValid && emailValid && passValid);
     }
 
-    accountNameInput.addEventListener('input', validateAccountInputs);
-    accountEmailInput.addEventListener('input', validateAccountInputs);
-    accountPasswordInput.addEventListener('input', validateAccountInputs);
+    document.getElementById('accountName').addEventListener('input', validateAccountInputs);
+    document.getElementById('accountEmail').addEventListener('input', validateAccountInputs);
+    document.getElementById('accountPassword').addEventListener('input', validateAccountInputs);
 
     // Salva account
-    saveAccountBtn.onclick = () => {
-      if (!currentUser || !currentKey) {
-        showAccountError("Effettua il login");
-        return;
-      }
-
-      const name = accountNameInput.value.trim();
-      const email = accountEmailInput.value.trim();
-      const pass = accountPasswordInput.value;
-
+    document.getElementById('saveAccountBtn').addEventListener('click', () => {
+      const name = document.getElementById('accountName').value.trim();
+      const email = document.getElementById('accountEmail').value.trim();
+      const pass = document.getElementById('accountPassword').value.trim();
+      
       if (!name || !email || !pass) {
-        showAccountError("Compila tutti i campi");
+        showAccountError(translate('fillAllFields'));
         return;
       }
-
-      if (!email.includes('@') || !email.includes('.')) {
-        showAccountError("Inserisci un'email valida");
+      
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showAccountError(translate('invalidEmail'));
         return;
       }
-
+      
       const users = getUsers();
-      const accounts = users[currentUser]?.accounts || [];
-      const isPro = localStorage.getItem('isPro') === 'true';
-
-      // Limite di 5 account per utenti non-Pro
-      if (!isPro && accounts.length >= 5 && users[currentUser].accounts.findIndex(a => a.name === name) === -1) {
-        showAccountError("Limite di 5 account raggiunto. Passa alla versione Pro!");
-        updateProButtonVisibility();
+      if (!users[currentUser]) {
+        showAccountError(translate('loginError'));
         return;
       }
-
-      if (!users[currentUser]) {
-        users[currentUser] = { passHash: hashPassword(currentKey), accounts: [] };
+      
+      // VERIFICA LIMITE ACCOUNT PER VERSIONE GRATUITA
+      if (!users[currentUser].isPro && users[currentUser].accounts.length >= 5 && editingAccountIndex === -1) {
+        showAccountError(translate('maxAccounts'));
+        document.getElementById('buyProBtn').style.display = 'block';
+        return;
       }
-
-      const existingIndex = users[currentUser].accounts.findIndex(a => a.name === name);
-      const encryptedPass = encrypt(pass, currentKey);
-      const encryptedEmail = encrypt(email, currentKey);
-
-      if (encryptedPass === null || encryptedEmail === null) return;
-
-      saveAccountBtn.textContent = 'Salvataggio...';
-      saveAccountBtn.disabled = true;
-
-      if (existingIndex >= 0) {
-        users[currentUser].accounts[existingIndex].pass = encryptedPass;
-        users[currentUser].accounts[existingIndex].email = encryptedEmail;
+      
+      // Cripta i tag prima di salvarli
+      const encryptedTags = currentTags.map(tag => encrypt(tag, currentKey));
+      
+      const encryptedAccount = {
+        name: encrypt(name, currentKey),
+        email: encrypt(email, currentKey),
+        pass: encrypt(pass, currentKey),
+        tags: encryptedTags  // Usa i tag criptati
+      };
+      
+      if (editingAccountIndex >= 0) {
+        // Modifica account esistente
+        users[currentUser].accounts[editingAccountIndex] = encryptedAccount;
+        showAccountSuccess(translate('accountUpdated'));
       } else {
-        users[currentUser].accounts.push({
-          name,
-          email: encryptedEmail,
-          pass: encryptedPass
-        });
+        // Aggiungi nuovo account
+        users[currentUser].accounts.push(encryptedAccount);
+        showAccountSuccess(translate('accountSaved'));
       }
-
+      
       if (saveUsers(users)) {
-        accountNameInput.value = '';
-        accountEmailInput.value = '';
-        accountPasswordInput.value = '';
-        showAccountSuccess(existingIndex >= 0 ? "Account aggiornato!" : "Account salvato!");
+        // Aggiorna i tag
+        currentTags.forEach(tag => allTags.add(tag));
+        updateTagFilter();
+        
+        // Resetta il form
+        resetAccountForm();
         loadAccounts();
-        updateProButtonVisibility();
       }
+    });
 
-      saveAccountBtn.textContent = 'Salva Account';
-      validateAccountInputs();
-    };
+    // Gestione versione Pro
+    document.getElementById('buyProBtn').addEventListener('click', async () => {
+      try {
+        // Simulazione acquisto (da sostituire con Capacitor Billing)
+        const users = getUsers();
+        if (users[currentUser]) {
+          // In una app reale, qui ci sarebbe la chiamata al plugin di acquisto
+          // await CapacitorPurchases.purchaseProduct('pro_version');
+          
+          // Simuliamo l'acquisto riuscito
+          users[currentUser].isPro = true;
+          if (saveUsers(users)) {
+            document.getElementById('buyProBtn').style.display = 'none';
+            showAccountSuccess(translate('proActivated'));
+            
+            // Aggiorna il badge Pro
+            const welcomeMsg = translate('welcome', { username: currentUser }) + 
+              `<span class="pro-badge">${translate('proBadge')}</span>`;
+            document.getElementById('welcomeMessage').innerHTML = welcomeMsg;
+          }
+        }
+      } catch (error) {
+        showAccountError("Errore durante l'acquisto: " + error.message);
+      }
+    });
+
+    function resetAccountForm() {
+      document.getElementById('accountName').value = '';
+      document.getElementById('accountEmail').value = '';
+      document.getElementById('accountPassword').value = '';
+      currentTags = [];
+      updateTagsPreview();
+      document.getElementById('saveAccountBtn').disabled = true;
+      editingAccountIndex = -1;
+    }
+
+    // Gestione delle etichette
+    document.getElementById('addTagBtn').addEventListener('click', () => {
+      const tagInput = document.getElementById('tagInput');
+      const tag = tagInput.value.trim();
+      
+      if (tag && !currentTags.includes(tag)) {
+        currentTags.push(tag);
+        allTags.add(tag);
+        updateTagsPreview();
+        updateTagFilter();
+        tagInput.value = '';
+      }
+    });
+
+    function updateTagsPreview() {
+      const tagsPreview = document.getElementById('tagsPreview');
+      tagsPreview.innerHTML = '';
+      currentTags.forEach(tag => {
+        const span = document.createElement('span');
+        span.className = 'tag';
+        span.textContent = tag;
+        tagsPreview.appendChild(span);
+      });
+    }
+
+    function updateTagFilter() {
+      const tagFilter = document.getElementById('tagFilter');
+      const selectedValue = tagFilter.value;
+      
+      while (tagFilter.options.length > 1) {
+        tagFilter.remove(1);
+      }
+      
+      Array.from(allTags).forEach(tag => {
+        const option = document.createElement('option');
+        option.value = tag;
+        option.textContent = tag;
+        tagFilter.appendChild(option);
+      });
+      
+      if (Array.from(tagFilter.options).some(opt => opt.value === selectedValue)) {
+        tagFilter.value = selectedValue;
+      }
+    }
+
+    // Ricerca e filtraggio
+    document.getElementById('searchInput').addEventListener('input', loadAccounts);
+    document.getElementById('tagFilter').addEventListener('change', loadAccounts);
 
     // Carica account
     function loadAccounts() {
       if (!currentUser || !currentKey) return;
 
       const users = getUsers();
-      const accounts = users[currentUser]?.accounts || [];
-      
+      let accounts = users[currentUser]?.accounts || [];
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const selectedTag = document.getElementById('tagFilter').value;
+
+      accounts = accounts.filter(acc => {
+        const nameMatch = decrypt(acc.name, currentKey).toLowerCase().includes(searchTerm);
+        const emailMatch = decrypt(acc.email, currentKey).toLowerCase().includes(searchTerm);
+        const tagMatch = !selectedTag || (acc.tags && acc.tags.some(tag => decrypt(tag, currentKey) === selectedTag));
+        return (nameMatch || emailMatch) && tagMatch;
+      });
+
+      const accountList = document.getElementById('accountList');
       accountList.innerHTML = '';
       accountList.style.display = accounts.length ? 'block' : 'none';
 
@@ -745,11 +1197,23 @@
 
         const nameEl = document.createElement('div');
         nameEl.className = 'account-name';
-        nameEl.textContent = acc.name;
+        nameEl.textContent = decrypt(acc.name, currentKey);
 
         const emailEl = document.createElement('div');
         emailEl.className = 'account-email';
         emailEl.textContent = decrypt(acc.email, currentKey);
+
+        const tagsContainer = document.createElement('div');
+        tagsContainer.className = 'account-tags';
+        if (acc.tags) {
+          acc.tags.forEach(tag => {
+            const decryptedTag = decrypt(tag, currentKey);
+            const tagSpan = document.createElement('span');
+            tagSpan.className = 'tag';
+            tagSpan.textContent = decryptedTag;
+            tagsContainer.appendChild(tagSpan);
+          });
+        }
 
         const passWrapper = document.createElement('div');
         passWrapper.className = 'password-wrapper';
@@ -777,10 +1241,33 @@
           </svg>
         `;
         deleteBtn.onclick = () => {
-          if (confirm(`Eliminare "${acc.name}"?`)) deleteAccount(index);
+          if (confirm(translate('deleteConfirm', { name: decrypt(acc.name, currentKey) }))) {
+            deleteAccount(index);
+          }
         };
 
-        item.append(nameEl, emailEl, passWrapper, deleteBtn);
+        const editBtn = document.createElement('button');
+        editBtn.className = 'btn-delete';
+        editBtn.style.color = 'var(--primary-color)';
+        editBtn.style.marginRight = '8px';
+        editBtn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>
+        `;
+        editBtn.onclick = () => {
+          editingAccountIndex = index;
+          document.getElementById('accountName').value = decrypt(acc.name, currentKey);
+          document.getElementById('accountEmail').value = decrypt(acc.email, currentKey);
+          document.getElementById('accountPassword').value = decrypt(acc.pass, currentKey);
+          currentTags = acc.tags ? acc.tags.map(tag => decrypt(tag, currentKey)) : [];
+          updateTagsPreview();
+          document.getElementById('saveAccountBtn').disabled = false;
+          document.getElementById('accountName').focus();
+        };
+
+        item.append(nameEl, emailEl, tagsContainer, passWrapper, editBtn, deleteBtn);
         accountList.appendChild(item);
       });
     }
@@ -789,15 +1276,16 @@
       const users = getUsers();
       if (users[currentUser]?.accounts) {
         users[currentUser].accounts.splice(index, 1);
-        saveUsers(users);
-        loadAccounts();
-        updateProButtonVisibility();
+        if (saveUsers(users)) {
+          loadAccounts();
+        }
       }
     }
 
+    // Esporta dati
     function exportData() {
       if (!currentUser) {
-        showAccountError("Effettua il login");
+        showAccountError(translate('loginError'));
         return;
       }
 
@@ -814,14 +1302,15 @@
         
         URL.revokeObjectURL(url);
       } catch (e) {
-        showAccountError("Errore nell'esportazione");
+        showAccountError(translate('exportError'));
         console.error(e);
       }
     }
 
+    // Importa dati
     function importData(event) {
       if (!currentUser) {
-        showAccountError("Effettua il login");
+        showAccountError(translate('loginError'));
         return;
       }
 
@@ -836,29 +1325,29 @@
         try {
           const data = JSON.parse(e.target.result);
           if (!data.accounts || !Array.isArray(data.accounts)) {
-            throw new Error("Formato file non valido");
+            throw new Error(translate('importError'));
           }
 
           const users = getUsers();
-          const isPro = localStorage.getItem('isPro') === 'true';
-
-          // Limite di 5 account per utenti non-Pro
-          if (!isPro && data.accounts.length > 5) {
-            showAccountError("Impossibile importare più di 5 account nella versione gratuita. Passa a Pro!");
-            importInput.disabled = false;
-            event.target.value = '';
-            return;
-          }
-
           users[currentUser].accounts = data.accounts;
           
+          // Estrai tutti i tag dagli account
+          allTags = new Set();
+          data.accounts.forEach(acc => {
+            if (acc.tags) {
+              acc.tags.forEach(tag => {
+                allTags.add(decrypt(tag, currentKey));
+              });
+            }
+          });
+          
           if (saveUsers(users)) {
-            showAccountSuccess(`Importati ${data.accounts.length} account`);
+            showAccountSuccess(translate('importSuccess', { count: data.accounts.length }));
             loadAccounts();
-            updateProButtonVisibility();
+            updateTagFilter();
           }
         } catch (e) {
-          showAccountError("Errore nell'importazione: " + e.message);
+          showAccountError(translate('importError') + ": " + e.message);
           console.error(e);
         } finally {
           importInput.disabled = false;
@@ -868,20 +1357,140 @@
       reader.readAsText(file);
     }
 
+    // Biometria
+    async function checkBiometricSupport() {
+      if (typeof Capacitor !== 'undefined' && Capacitor.isNativePlatform()) {
+        try {
+          const { BiometricAuth } = Capacitor.Plugins;
+          const result = await BiometricAuth.checkBiometry();
+          return result.isAvailable;
+        } catch {
+          return false;
+        }
+      }
+      return false;
+    }
+
+    document.getElementById('biometricLoginBtn').addEventListener('click', async () => {
+      if (!await checkBiometricSupport()) {
+        showError(translate('biometricNotSupported'));
+        return;
+      }
+
+      try {
+        const { BiometricAuth } = Capacitor.Plugins;
+        const result = await BiometricAuth.authenticate({
+          reason: translate('biometricReason'),
+          cancelTitle: translate('cancel'),
+          maxAttempts: 3
+        });
+        
+        if (result.success) {
+          const users = getUsers();
+          const user = Object.keys(users).find(u => 
+            users[u].lastBiometricLogin === true
+          );
+          
+          if (user) {
+            currentUser = user;
+            currentKey = decrypt(users[user].biometricSecret, user + users[user].passHash);
+            initApp();
+          } else {
+            showError(translate('noBiometricAccount'));
+          }
+        }
+      } catch (error) {
+        showError(translate('biometricError'));
+      }
+    });
+
+    document.getElementById('setupBiometricBtn').addEventListener('click', async () => {
+      if (!await checkBiometricSupport()) {
+        showError(translate('biometricNotSupported'));
+        return;
+      }
+
+      const pass = document.getElementById('userpass').value;
+      if (!pass) {
+        showError(translate('fillPasswordFirst'));
+        return;
+      }
+
+      try {
+        const { BiometricAuth } = Capacitor.Plugins;
+        const result = await BiometricAuth.authenticate({
+          reason: translate('setupBiometric'),
+          cancelTitle: translate('cancel')
+        });
+        
+        if (result.success) {
+          const users = getUsers();
+          const user = document.getElementById('username').value.trim();
+          if (users[user]) {
+            users[user].lastBiometricLogin = true;
+            // Crittografiamo il segreto biometrico con una chiave derivata da username + password hash
+            users[user].biometricSecret = encrypt(pass, user + users[user].passHash);
+            if (saveUsers(users)) {
+              showError(translate('biometricSetupSuccess'));
+              document.getElementById('setupBiometricBtn').style.display = 'none';
+              document.getElementById('biometricLoginBtn').style.display = 'block';
+            }
+          }
+        }
+      } catch (error) {
+        showError(translate('biometricSetupError'));
+      }
+    });
+
+    // Tema
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      const isDark = document.body.classList.contains('dark');
+      document.body.classList.toggle('dark');
+      document.querySelector('.theme-icon').textContent = isDark ? '🌞' : '🌙';
+      localStorage.setItem('theme', isDark ? 'light' : 'dark');
+    });
+
     // Inizializzazione
     window.addEventListener('DOMContentLoaded', async () => {
+      // Imposta tema
+      if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark');
+        document.querySelector('.theme-icon').textContent = '🌙';
+      }
+      
+      // Imposta lingua
+      updateUI();
+      
+      // Auto-login biometrico se supportato
+      if (await checkBiometricSupport()) {
+        const users = getUsers();
+        const user = Object.keys(users).find(u => users[u].lastBiometricLogin);
+        if (user) {
+          document.getElementById('biometricLoginBtn').style.display = 'block';
+          document.getElementById('loginContainer').style.display = 'block';
+        }
+      }
+      
+      // Auto-login normale
       const user = localStorage.getItem('authUser');
       if (user) {
         currentUser = user;
-        usernameInput.value = user;
-        userpassInput.focus();
+        document.getElementById('username').value = user;
+        document.getElementById('userpass').focus();
       }
-      // Configura gli acquisti in-app
-      if (typeof InAppPurchases !== 'undefined') {
-        await setupInAppPurchases();
-        await checkProStatus();
-      } else {
-        console.warn("InAppPurchases non disponibile. Esegui l'app in un ambiente Capacitor.");
+      
+      // Carica eventuali tag esistenti
+      if (currentUser) {
+        const users = getUsers();
+        const accounts = users[currentUser]?.accounts || [];
+        accounts.forEach(acc => {
+          if (acc.tags) {
+            acc.tags.forEach(tag => {
+              allTags.add(decrypt(tag, currentKey));
+            });
+          }
+        });
+        updateTagFilter();
       }
     });
   </script>
