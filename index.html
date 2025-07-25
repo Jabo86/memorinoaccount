@@ -50,20 +50,20 @@
 
     header {
       display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 2rem;
-      user-select: none;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
       position: relative;
       width: 100%;
+      text-align: center;
     }
 
     h1 {
       font-size: 2.5rem;
       color: var(--primary-color);
       text-align: center;
-      flex-grow: 1;
+      order: 1;
+      margin: 0.5rem 0;
     }
     body.dark h1 {
       color: var(--primary-hover);
@@ -71,9 +71,11 @@
 
     .theme-language-container {
       display: flex;
-      gap: 0.5rem;
-      position: absolute;
-      right: 0;
+      justify-content: center;
+      gap: 1rem;
+      order: 2;
+      margin-top: 0.5rem;
+      width: 100%;
     }
 
     #themeToggle, #languageToggle {
@@ -84,7 +86,7 @@
       color: var(--primary-color);
       background: none;
       border: none;
-      padding: 0;
+      padding: 0.5rem;
     }
     body.dark #themeToggle, body.dark #languageToggle {
       color: var(--primary-hover);
@@ -242,49 +244,74 @@
       background: var(--card-light);
       border-radius: 12px;
       box-shadow: 0 3px 10px var(--shadow-light);
-      padding: 1rem 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
+      padding: 1.5rem;
       margin-bottom: 1rem;
       transition: background-color 0.3s ease;
       user-select: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
     }
     body.dark .account-item {
       background: var(--card-dark);
       box-shadow: 0 3px 10px var(--shadow-dark);
     }
 
+    .account-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
     .account-name {
       font-weight: 600;
-      flex: 0 0 20%;
-      min-width: 120px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       color: var(--primary-color);
       user-select: text;
+      word-break: break-word;
     }
     body.dark .account-name {
       color: var(--primary-hover);
     }
 
     .account-email {
-      flex: 0 0 20%;
-      min-width: 120px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      font-size: 0.9rem;
+      font-size: 1rem;
+      color: var(--text-light);
       user-select: text;
+      word-break: break-all;
+      padding: 0.5rem 0;
+    }
+    body.dark .account-email {
+      color: var(--text-dark);
+    }
+
+    .account-password-container {
+      position: relative;
+      margin-top: 0.5rem;
+    }
+
+    .account-password {
+      width: 100%;
+      padding: 0.8rem 2.5rem 0.8rem 1rem;
+      font-family: monospace;
+      font-size: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: rgba(0,0,0,0.05);
+      color: inherit;
+      user-select: text;
+      word-break: break-all;
+    }
+    body.dark .account-password {
+      border-color: #555;
+      background: rgba(255,255,255,0.05);
     }
 
     .account-tags {
-      flex: 0 0 15%;
       display: flex;
       flex-wrap: wrap;
       gap: 0.3rem;
+      margin-top: 0.5rem;
     }
 
     .tag {
@@ -297,35 +324,6 @@
     }
     body.dark .tag {
       background-color: var(--primary-hover);
-    }
-
-    .password-wrapper {
-      flex: 1;
-      position: relative;
-    }
-
-    .password-wrapper input {
-      width: 100%;
-      padding: 0.6rem 2.8rem 0.6rem 1rem;
-      font-family: monospace;
-      font-size: 1rem;
-      border: 1.5px solid #bbb;
-      border-radius: 12px;
-      background: transparent;
-      color: inherit;
-      user-select: text;
-    }
-    .password-wrapper input:focus {
-      outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 6px var(--primary-color);
-    }
-    body.dark .password-wrapper input {
-      border-color: #555;
-    }
-    body.dark .password-wrapper input:focus {
-      border-color: var(--primary-hover);
-      box-shadow: 0 0 6px var(--primary-hover);
     }
 
     .toggle-password {
@@ -346,8 +344,14 @@
       color: var(--primary-hover);
     }
 
+    .account-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
     .btn-delete {
-      flex: 0 0 auto;
       background: transparent;
       border: none;
       cursor: pointer;
@@ -365,6 +369,33 @@
       background-color: rgba(229, 57, 53, 0.15);
     }
     .btn-delete svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .btn-edit {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 8px;
+      color: var(--primary-color);
+      transition: background-color 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+    }
+    .btn-edit:hover {
+      background-color: rgba(25, 118, 210, 0.15);
+    }
+    .btn-edit svg {
       width: 18px;
       height: 18px;
       fill: none;
@@ -441,53 +472,91 @@
 
     @media (max-width: 600px) {
       body {
-        padding: 1rem;
+        padding: 1rem 0.5rem;
       }
-      h1 {
-        font-size: 2rem;
+      
+      .container {
+        gap: 1.2rem;
       }
+      
       .card {
         padding: 1.2rem;
+        border-radius: 12px;
       }
-      .account-name, .account-email {
-        font-size: 0.9rem;
-        min-width: 100px;
+      
+      h1 {
+        font-size: 1.8rem;
       }
-      .password-wrapper input {
-        font-size: 0.9rem;
+      
+      input, button, select {
+        padding: 0.7rem;
+        margin-top: 0.6rem;
+        font-size: 0.95rem;
       }
+      
+      .search-container {
+        flex-direction: column;
+      }
+      
+      .search-container select {
+        width: 100%;
+      }
+      
+      .account-name {
+        font-size: 1.1rem;
+      }
+      
+      .account-email, .account-password {
+        font-size: 0.95rem;
+      }
+      
       .toggle-password {
         font-size: 1.1rem;
       }
-      .btn-delete {
+      
+      .btn-delete, .btn-edit {
         width: 28px;
         height: 28px;
       }
-      .btn-delete svg {
+      
+      .btn-delete svg, .btn-edit svg {
         width: 16px;
         height: 16px;
       }
-    }
-
-    @media (max-width: 500px) {
-      .account-item {
+      
+      .tag-input-container {
         flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
       }
-      .account-name, .account-email, .account-tags {
-        flex: 1 1 100%;
+      
+      .add-tag-btn {
         width: 100%;
       }
-      .password-wrapper {
-        flex: 1 1 100%;
-        width: 100%;
-      }
-      .btn-delete {
-        align-self: flex-end;
-      }
+      
       .import-export-container {
         flex-direction: column;
+      }
+    }
+
+    @media (max-width: 400px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+      
+      .card {
+        padding: 1rem;
+      }
+      
+      input, button, select {
+        padding: 0.6rem;
+        font-size: 0.9rem;
+      }
+      
+      .account-name {
+        font-size: 1rem;
+      }
+      
+      .account-email, .account-password {
+        font-size: 0.9rem;
       }
     }
   </style>
@@ -1195,61 +1264,18 @@
         const item = document.createElement('div');
         item.className = 'account-item';
 
+        const header = document.createElement('div');
+        header.className = 'account-header';
+
         const nameEl = document.createElement('div');
         nameEl.className = 'account-name';
         nameEl.textContent = decrypt(acc.name, currentKey);
 
-        const emailEl = document.createElement('div');
-        emailEl.className = 'account-email';
-        emailEl.textContent = decrypt(acc.email, currentKey);
-
-        const tagsContainer = document.createElement('div');
-        tagsContainer.className = 'account-tags';
-        if (acc.tags) {
-          acc.tags.forEach(tag => {
-            const decryptedTag = decrypt(tag, currentKey);
-            const tagSpan = document.createElement('span');
-            tagSpan.className = 'tag';
-            tagSpan.textContent = decryptedTag;
-            tagsContainer.appendChild(tagSpan);
-          });
-        }
-
-        const passWrapper = document.createElement('div');
-        passWrapper.className = 'password-wrapper';
-
-        const passInput = document.createElement('input');
-        passInput.type = 'password';
-        passInput.readOnly = true;
-        passInput.value = decrypt(acc.pass, currentKey);
-
-        const toggleBtn = document.createElement('span');
-        toggleBtn.className = 'toggle-password';
-        toggleBtn.textContent = '👁️';
-        toggleBtn.onclick = () => {
-          passInput.type = passInput.type === 'password' ? 'text' : 'password';
-          toggleBtn.textContent = passInput.type === 'password' ? '👁️' : '🙈';
-        };
-
-        passWrapper.append(passInput, toggleBtn);
-
-        const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'btn-delete';
-        deleteBtn.innerHTML = `
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-          </svg>
-        `;
-        deleteBtn.onclick = () => {
-          if (confirm(translate('deleteConfirm', { name: decrypt(acc.name, currentKey) }))) {
-            deleteAccount(index);
-          }
-        };
+        const actions = document.createElement('div');
+        actions.className = 'account-actions';
 
         const editBtn = document.createElement('button');
-        editBtn.className = 'btn-delete';
-        editBtn.style.color = 'var(--primary-color)';
-        editBtn.style.marginRight = '8px';
+        editBtn.className = 'btn-edit';
         editBtn.innerHTML = `
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
@@ -1267,7 +1293,61 @@
           document.getElementById('accountName').focus();
         };
 
-        item.append(nameEl, emailEl, tagsContainer, passWrapper, editBtn, deleteBtn);
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'btn-delete';
+        deleteBtn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+          </svg>
+        `;
+        deleteBtn.onclick = () => {
+          if (confirm(translate('deleteConfirm', { name: decrypt(acc.name, currentKey) }))) {
+            deleteAccount(index);
+          }
+        };
+
+        actions.append(editBtn, deleteBtn);
+        header.append(nameEl, actions);
+        item.appendChild(header);
+
+        const emailEl = document.createElement('div');
+        emailEl.className = 'account-email';
+        emailEl.textContent = decrypt(acc.email, currentKey);
+        item.appendChild(emailEl);
+
+        const passContainer = document.createElement('div');
+        passContainer.className = 'account-password-container';
+
+        const passInput = document.createElement('input');
+        passInput.className = 'account-password';
+        passInput.type = 'password';
+        passInput.readOnly = true;
+        passInput.value = decrypt(acc.pass, currentKey);
+
+        const toggleBtn = document.createElement('span');
+        toggleBtn.className = 'toggle-password';
+        toggleBtn.textContent = '👁️';
+        toggleBtn.onclick = () => {
+          passInput.type = passInput.type === 'password' ? 'text' : 'password';
+          toggleBtn.textContent = passInput.type === 'password' ? '👁️' : '🙈';
+        };
+
+        passContainer.append(passInput, toggleBtn);
+        item.appendChild(passContainer);
+
+        const tagsContainer = document.createElement('div');
+        tagsContainer.className = 'account-tags';
+        if (acc.tags) {
+          acc.tags.forEach(tag => {
+            const decryptedTag = decrypt(tag, currentKey);
+            const tagSpan = document.createElement('span');
+            tagSpan.className = 'tag';
+            tagSpan.textContent = decryptedTag;
+            tagsContainer.appendChild(tagSpan);
+          });
+        }
+        item.appendChild(tagsContainer);
+
         accountList.appendChild(item);
       });
     }
