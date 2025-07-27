@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MemorinoAccount</title>
+  <title>Memorino Account</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
   <script src="https://unpkg.com/@capacitor/core@latest/dist/capacitor.js"></script>
@@ -175,12 +175,47 @@
       background-color: #b71c1c;
     }
 
-    .pro-btn {
-      background-color: var(--pro-color);
+    .pro-section {
       margin-top: 1rem;
+      text-align: center;
     }
-    .pro-btn:hover {
+
+    .pro-section p {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--pro-color);
+      margin-bottom: 1rem;
+    }
+    body.dark .pro-section p {
+      color: #ce93d8;
+    }
+
+    .pro-btn {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .pro-btn a {
+      background-color: var(--pro-color);
+      padding: 0.8rem;
+      border-radius: 10px;
+      text-decoration: none;
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s ease;
+    }
+    .pro-btn a:hover {
       background-color: #7b1fa2;
+    }
+
+    .store-logo {
+      width: 50px; /* Dimensione uniforme per entrambe le icone */
+      height: auto;
+      vertical-align: middle;
     }
 
     .pro-badge {
@@ -535,6 +570,15 @@
       .import-export-container {
         flex-direction: column;
       }
+      
+      .pro-btn {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      
+      .store-logo {
+        width: 48px; /* Dimensione uniforme per schermi piccoli */
+      }
     }
 
     @media (max-width: 400px) {
@@ -557,6 +601,10 @@
       
       .account-email, .account-password {
         font-size: 0.9rem;
+      }
+      
+      .store-logo {
+        width: 40px; /* Ancora più piccolo per schermi molto piccoli */
       }
     }
   </style>
@@ -609,7 +657,18 @@
       <div class="error-message" id="accountErrorMessage"></div>
       <div class="success-message" id="accountSuccessMessage"></div>
       <button id="saveAccountBtn" disabled>Salva Account</button>
-      <button id="buyProBtn" class="pro-btn" style="display:none;">Sblocca Versione Pro</button>
+      
+      <div id="buyProBtn" class="pro-section" style="display:none;">
+        <p id="proSectionText"></p>
+        <div class="pro-btn">
+          <a href="https://play.google.com/store/apps/details?id=com.tuaapp.memorinoaccountpro" target="_blank">
+            <img width="48" height="48" src="https://img.icons8.com/fluency/48/google-play.png" class="store-logo" alt="google-play"/>
+          </a>
+          <a href="https://apps.apple.com/us/app/memorinoaccount-pro/id123456789" target="_blank">
+            <img width="50" height="50" src="https://img.icons8.com/fluency/50/apple-app-store.png" class="store-logo" alt="apple-store-app"/>
+          </a>
+        </div>
+      </div>
       
       <div class="import-export-container">
         <button onclick="exportData()">Esporta Dati</button>
@@ -637,6 +696,7 @@
         loginBtn: "Accedi",
         biometricLogin: "Accedi con Biometria",
         welcome: "Benvenuto, {username}!",
+        welcomeFree: "Benvenuti nella versione gratuita!",
         searchPlaceholder: "Cerca account...",
         allTags: "Tutte le etichette",
         accountNamePlaceholder: "Nome Account",
@@ -644,7 +704,7 @@
         accountPasswordPlaceholder: "Password",
         tagPlaceholder: "Aggiungi etichetta",
         saveAccountBtn: "Salva Account",
-        buyProBtn: "Sblocca Versione Pro",
+        proSectionText: "Passa alla versione Pro per account illimitati!",
         exportBtn: "Esporta Dati",
         importBtn: "Importa Dati",
         logoutBtn: "Logout",
@@ -658,7 +718,7 @@
         importSuccess: "Importati {count} account",
         importError: "Errore nell'importazione",
         loginError: "Effettua il login",
-        maxAccounts: "Limite di 5 account raggiunto. Sblocca la versione Pro per account illimitati!",
+        maxAccounts: "Limite di 5 account raggiunto. Passa alla versione Pro per account illimitati!",
         biometricNotSupported: "Biometria non supportata",
         biometricError: "Autenticazione biometrica fallita",
         proFeature: "Funzionalità Pro - Acquista per sbloccare account illimitati",
@@ -673,7 +733,7 @@
         fillPasswordFirst: "Inserisci prima la password"
       },
       en: {
-        appTitle: "Account Keeper",
+        appTitle: "Memorino Account",
         themeToggle: "Toggle theme",
         languageToggle: "Change language",
         loginPlaceholder: "Username",
@@ -681,6 +741,7 @@
         loginBtn: "Login",
         biometricLogin: "Login with Biometrics",
         welcome: "Welcome, {username}!",
+        welcomeFree: "Welcome to the free version!",
         searchPlaceholder: "Search accounts...",
         allTags: "All tags",
         accountNamePlaceholder: "Account Name",
@@ -688,7 +749,7 @@
         accountPasswordPlaceholder: "Password",
         tagPlaceholder: "Add tag",
         saveAccountBtn: "Save Account",
-        buyProBtn: "Upgrade to Pro",
+        proSectionText: "Upgrade to Pro for unlimited accounts!",
         exportBtn: "Export Data",
         importBtn: "Import Data",
         logoutBtn: "Logout",
@@ -717,7 +778,7 @@
         fillPasswordFirst: "Enter password first"
       },
       fr: {
-        appTitle: "Gestionnaire de Comptes",
+        appTitle: "Memorino Account",
         themeToggle: "Changer le thème",
         languageToggle: "Changer la langue",
         loginPlaceholder: "Nom d'utilisateur",
@@ -725,6 +786,7 @@
         loginBtn: "Connexion",
         biometricLogin: "Connexion biométrique",
         welcome: "Bienvenue, {username}!",
+        welcomeFree: "Bienvenue dans la version gratuite !",
         searchPlaceholder: "Rechercher des comptes...",
         allTags: "Tous les tags",
         accountNamePlaceholder: "Nom du compte",
@@ -732,7 +794,7 @@
         accountPasswordPlaceholder: "Mot de passe",
         tagPlaceholder: "Ajouter un tag",
         saveAccountBtn: "Enregistrer",
-        buyProBtn: "Passer à Pro",
+        proSectionText: "Passez à Pro pour des comptes illimités !",
         exportBtn: "Exporter",
         importBtn: "Importer",
         logoutBtn: "Déconnexion",
@@ -761,7 +823,7 @@
         fillPasswordFirst: "Entrez d'abord le mot de passe"
       },
       de: {
-        appTitle: "Konto-Verwalter",
+        appTitle: "Memorino Account",
         themeToggle: "Thema wechseln",
         languageToggle: "Sprache ändern",
         loginPlaceholder: "Benutzername",
@@ -769,6 +831,7 @@
         loginBtn: "Anmelden",
         biometricLogin: "Mit Biometrie anmelden",
         welcome: "Willkommen, {username}!",
+        welcomeFree: "Willkommen in der kostenlosen Version!",
         searchPlaceholder: "Konten suchen...",
         allTags: "Alle Tags",
         accountNamePlaceholder: "Kontoname",
@@ -776,7 +839,7 @@
         accountPasswordPlaceholder: "Passwort",
         tagPlaceholder: "Tag hinzufügen",
         saveAccountBtn: "Konto speichern",
-        buyProBtn: "Zu Pro wechseln",
+        proSectionText: "Upgrade auf Pro für unbegrenzte Konten!",
         exportBtn: "Daten exportieren",
         importBtn: "Daten importieren",
         logoutBtn: "Abmelden",
@@ -805,7 +868,7 @@
         fillPasswordFirst: "Geben Sie zuerst das Passwort ein"
       },
       es: {
-        appTitle: "Administrador de Cuentas",
+        appTitle: "Memorino Account",
         themeToggle: "Cambiar tema",
         languageToggle: "Cambiar idioma",
         loginPlaceholder: "Nombre de usuario",
@@ -813,6 +876,7 @@
         loginBtn: "Iniciar sesión",
         biometricLogin: "Iniciar con biometría",
         welcome: "¡Bienvenido, {username}!",
+        welcomeFree: "¡Bienvenido a la versión gratuita!",
         searchPlaceholder: "Buscar cuentas...",
         allTags: "Todas las etiquetas",
         accountNamePlaceholder: "Nombre de cuenta",
@@ -820,7 +884,7 @@
         accountPasswordPlaceholder: "Contraseña",
         tagPlaceholder: "Añadir etiqueta",
         saveAccountBtn: "Guardar cuenta",
-        buyProBtn: "Pasar a Pro",
+        proSectionText: "¡Pasa a Pro para cuentas ilimitadas!",
         exportBtn: "Exportar datos",
         importBtn: "Importar datos",
         logoutBtn: "Cerrar sesión",
@@ -891,7 +955,7 @@
       document.getElementById('accountPassword').placeholder = translate('accountPasswordPlaceholder');
       document.getElementById('tagInput').placeholder = translate('tagPlaceholder');
       document.getElementById('saveAccountBtn').textContent = translate('saveAccountBtn');
-      document.getElementById('buyProBtn').textContent = translate('buyProBtn');
+      document.getElementById('proSectionText').textContent = translate('proSectionText');
       document.querySelector('button[onclick="exportData()"]').textContent = translate('exportBtn');
       document.querySelector('.file-input-wrapper button').textContent = translate('importBtn');
       document.getElementById('logoutBtn').textContent = translate('logoutBtn');
@@ -899,10 +963,7 @@
       if (currentUser) {
         const users = getUsers();
         const isPro = users[currentUser]?.isPro || false;
-        let welcomeMsg = translate('welcome', { username: currentUser });
-        if (isPro) {
-          welcomeMsg += `<span class="pro-badge">${translate('proBadge')}</span>`;
-        }
+        let welcomeMsg = isPro ? translate('welcome', { username: currentUser }) + `<span class="pro-badge">${translate('proBadge')}</span>` : translate('welcomeFree');
         document.getElementById('welcomeMessage').innerHTML = welcomeMsg;
       }
     }
@@ -1053,12 +1114,11 @@
       const users = getUsers();
       const isPro = users[currentUser]?.isPro || false;
       
-      let welcomeMsg = translate('welcome', { username: currentUser });
-      if (isPro) {
-        welcomeMsg += `<span class="pro-badge">${translate('proBadge')}</span>`;
-      }
-      
+      let welcomeMsg = isPro ? translate('welcome', { username: currentUser }) + `<span class="pro-badge">${translate('proBadge')}</span>` : translate('welcomeFree');
       document.getElementById('welcomeMessage').innerHTML = welcomeMsg;
+      
+      // Mostra sempre la sezione "Passa a Pro" nella versione gratuita
+      document.getElementById('buyProBtn').style.display = isPro ? 'none' : 'block';
       
       // Carica tutti i tag esistenti
       allTags = new Set();
@@ -1067,7 +1127,7 @@
         if (acc.tags) {
           acc.tags.forEach(tag => {
             const decryptedTag = decrypt(tag, currentKey);
-            allTags.add(decryptedTag);
+            if (decryptedTag) allTags.add(decryptedTag);
           });
         }
       });
@@ -1131,7 +1191,7 @@
         name: encrypt(name, currentKey),
         email: encrypt(email, currentKey),
         pass: encrypt(pass, currentKey),
-        tags: encryptedTags  // Usa i tag criptati
+        tags: encryptedTags
       };
       
       if (editingAccountIndex >= 0) {
@@ -1152,32 +1212,6 @@
         // Resetta il form
         resetAccountForm();
         loadAccounts();
-      }
-    });
-
-    // Gestione versione Pro
-    document.getElementById('buyProBtn').addEventListener('click', async () => {
-      try {
-        // Simulazione acquisto (da sostituire con Capacitor Billing)
-        const users = getUsers();
-        if (users[currentUser]) {
-          // In una app reale, qui ci sarebbe la chiamata al plugin di acquisto
-          // await CapacitorPurchases.purchaseProduct('pro_version');
-          
-          // Simuliamo l'acquisto riuscito
-          users[currentUser].isPro = true;
-          if (saveUsers(users)) {
-            document.getElementById('buyProBtn').style.display = 'none';
-            showAccountSuccess(translate('proActivated'));
-            
-            // Aggiorna il badge Pro
-            const welcomeMsg = translate('welcome', { username: currentUser }) + 
-              `<span class="pro-badge">${translate('proBadge')}</span>`;
-            document.getElementById('welcomeMessage').innerHTML = welcomeMsg;
-          }
-        }
-      } catch (error) {
-        showAccountError("Errore durante l'acquisto: " + error.message);
       }
     });
 
@@ -1224,7 +1258,7 @@
         tagFilter.remove(1);
       }
       
-      Array.from(allTags).forEach(tag => {
+      Array.from(allTags).sort().forEach(tag => {
         const option = document.createElement('option');
         option.value = tag;
         option.textContent = tag;
@@ -1287,7 +1321,7 @@
           document.getElementById('accountName').value = decrypt(acc.name, currentKey);
           document.getElementById('accountEmail').value = decrypt(acc.email, currentKey);
           document.getElementById('accountPassword').value = decrypt(acc.pass, currentKey);
-          currentTags = acc.tags ? acc.tags.map(tag => decrypt(tag, currentKey)) : [];
+          currentTags = acc.tags ? acc.tags.map(tag => decrypt(tag, currentKey)).filter(tag => tag) : [];
           updateTagsPreview();
           document.getElementById('saveAccountBtn').disabled = false;
           document.getElementById('accountName').focus();
@@ -1340,10 +1374,12 @@
         if (acc.tags) {
           acc.tags.forEach(tag => {
             const decryptedTag = decrypt(tag, currentKey);
-            const tagSpan = document.createElement('span');
-            tagSpan.className = 'tag';
-            tagSpan.textContent = decryptedTag;
-            tagsContainer.appendChild(tagSpan);
+            if (decryptedTag) {
+              const tagSpan = document.createElement('span');
+              tagSpan.className = 'tag';
+              tagSpan.textContent = decryptedTag;
+              tagsContainer.appendChild(tagSpan);
+            }
           });
         }
         item.appendChild(tagsContainer);
@@ -1358,6 +1394,7 @@
         users[currentUser].accounts.splice(index, 1);
         if (saveUsers(users)) {
           loadAccounts();
+          updateTagFilter();
         }
       }
     }
@@ -1371,7 +1408,20 @@
 
       try {
         const users = getUsers();
-        const data = JSON.stringify(users[currentUser]);
+        if (!users[currentUser]) {
+          showAccountError(translate('exportError') + ": Nessun dato utente trovato.");
+          return;
+        }
+
+        // Esporta l'intero oggetto dell'utente corrente
+        const data = JSON.stringify({
+          passHash: users[currentUser].passHash,
+          accounts: users[currentUser].accounts || [],
+          isPro: users[currentUser].isPro,
+          lastBiometricLogin: users[currentUser].lastBiometricLogin,
+          biometricSecret: users[currentUser].biometricSecret
+        }, null, 2);
+
         const blob = new Blob([data], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         
@@ -1381,21 +1431,25 @@
         a.click();
         
         URL.revokeObjectURL(url);
+        showAccountSuccess("Dati esportati con successo!");
       } catch (e) {
-        showAccountError(translate('exportError'));
-        console.error(e);
+        showAccountError(translate('exportError') + ": " + e.message);
+        console.error("Errore esportazione:", e);
       }
     }
 
     // Importa dati
     function importData(event) {
-      if (!currentUser) {
+      if (!currentUser || !currentKey) {
         showAccountError(translate('loginError'));
         return;
       }
 
       const file = event.target.files[0];
-      if (!file) return;
+      if (!file) {
+        showAccountError(translate('importError') + ": Nessun file selezionato.");
+        return;
+      }
 
       const importInput = document.getElementById('importFile');
       importInput.disabled = true;
@@ -1404,35 +1458,74 @@
       reader.onload = (e) => {
         try {
           const data = JSON.parse(e.target.result);
-          if (!data.accounts || !Array.isArray(data.accounts)) {
-            throw new Error(translate('importError'));
+          
+          // Verifica la struttura del file
+          if (!data || !Array.isArray(data.accounts)) {
+            throw new Error("Formato file non valido o account mancanti.");
           }
 
           const users = getUsers();
-          users[currentUser].accounts = data.accounts;
-          
-          // Estrai tutti i tag dagli account
+          if (!users[currentUser]) {
+            throw new Error("Utente corrente non trovato.");
+          }
+
+          // Valida gli account importati
+          const validAccounts = data.accounts.filter(acc => {
+            return (
+              acc.name &&
+              acc.email &&
+              acc.pass &&
+              decrypt(acc.name, currentKey) &&
+              decrypt(acc.email, currentKey) &&
+              decrypt(acc.pass, currentKey)
+            );
+          });
+
+          // Controlla il limite di 5 account nella versione gratuita
+          if (!users[currentUser].isPro && validAccounts.length > 5) {
+            showAccountError(translate('maxAccounts'));
+            document.getElementById('buyProBtn').style.display = 'block';
+            throw new Error("Impossibile importare: limite di 5 account superato nella versione gratuita.");
+          }
+
+          // Aggiorna i dati dell'utente
+          users[currentUser].accounts = validAccounts;
+          users[currentUser].isPro = data.isPro || false;
+          if (data.lastBiometricLogin && data.biometricSecret) {
+            users[currentUser].lastBiometricLogin = data.lastBiometricLogin;
+            users[currentUser].biometricSecret = data.biometricSecret;
+          }
+
+          // Aggiorna i tag
           allTags = new Set();
-          data.accounts.forEach(acc => {
-            if (acc.tags) {
+          validAccounts.forEach(acc => {
+            if (acc.tags && Array.isArray(acc.tags)) {
               acc.tags.forEach(tag => {
-                allTags.add(decrypt(tag, currentKey));
+                const decryptedTag = decrypt(tag, currentKey);
+                if (decryptedTag) allTags.add(decryptedTag);
               });
             }
           });
-          
+
           if (saveUsers(users)) {
-            showAccountSuccess(translate('importSuccess', { count: data.accounts.length }));
+            showAccountSuccess(translate('importSuccess', { count: validAccounts.length }));
             loadAccounts();
             updateTagFilter();
+          } else {
+            throw new Error("Errore nel salvataggio dei dati importati.");
           }
         } catch (e) {
           showAccountError(translate('importError') + ": " + e.message);
-          console.error(e);
+          console.error("Errore importazione:", e);
         } finally {
           importInput.disabled = false;
           event.target.value = '';
         }
+      };
+      reader.onerror = () => {
+        showAccountError(translate('importError') + ": Errore nella lettura del file.");
+        importInput.disabled = false;
+        event.target.value = '';
       };
       reader.readAsText(file);
     }
@@ -1474,13 +1567,17 @@
           if (user) {
             currentUser = user;
             currentKey = decrypt(users[user].biometricSecret, user + users[user].passHash);
+            if (!currentKey) {
+              showError("Errore nella decrittazione della chiave biometrica.");
+              return;
+            }
             initApp();
           } else {
             showError(translate('noBiometricAccount'));
           }
         }
       } catch (error) {
-        showError(translate('biometricError'));
+        showError(translate('biometricError') + ": " + error.message);
       }
     });
 
@@ -1506,19 +1603,22 @@
         if (result.success) {
           const users = getUsers();
           const user = document.getElementById('username').value.trim();
-          if (users[user]) {
-            users[user].lastBiometricLogin = true;
-            // Crittografiamo il segreto biometrico con una chiave derivata da username + password hash
-            users[user].biometricSecret = encrypt(pass, user + users[user].passHash);
-            if (saveUsers(users)) {
-              showError(translate('biometricSetupSuccess'));
-              document.getElementById('setupBiometricBtn').style.display = 'none';
-              document.getElementById('biometricLoginBtn').style.display = 'block';
-            }
+          if (!users[user]) {
+            showError("Utente non trovato. Effettua prima il login.");
+            return;
+          }
+          users[user].lastBiometricLogin = true;
+          users[user].biometricSecret = encrypt(pass, user + users[user].passHash);
+          if (saveUsers(users)) {
+            showError(translate('biometricSetupSuccess'));
+            document.getElementById('setupBiometricBtn').style.display = 'none';
+            document.getElementById('biometricLoginBtn').style.display = 'block';
+          } else {
+            throw new Error("Errore nel salvataggio della configurazione biometrica.");
           }
         }
       } catch (error) {
-        showError(translate('biometricSetupError'));
+        showError(translate('biometricSetupError') + ": " + error.message);
       }
     });
 
@@ -1566,7 +1666,8 @@
         accounts.forEach(acc => {
           if (acc.tags) {
             acc.tags.forEach(tag => {
-              allTags.add(decrypt(tag, currentKey));
+              const decryptedTag = decrypt(tag, currentKey);
+              if (decryptedTag) allTags.add(decryptedTag);
             });
           }
         });
